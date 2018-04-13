@@ -83,7 +83,7 @@ def make_melon_type_lookup(melon_types):
 
 class Melon(object):
     """A melon in a melon harvest."""
-    self.all_melon_types = make_melon_type_lookup(make_melon_types())
+    all_melon_types = make_melon_type_lookup(make_melon_types())
 
     def __init__ (self, melon_code, shape_rating, color_rating, from_field, harvested_by):
         self.melon_type = self.all_melon_types[melon_code]
@@ -92,8 +92,8 @@ class Melon(object):
         self.from_field = from_field
         self.harvested_by = harvested_by 
 
-    def is_sellable():
-        if (self.from_field != 3) and (self.shape_rating >= 5) and (self.color_rating >= 5):
+    def is_sellable(self):
+        if ((self.from_field != 3) and (self.shape_rating >= 5)) and (self.color_rating >= 5):
             return True
         return False
 
@@ -142,4 +142,33 @@ def get_sellability_report(melons):
 
     # Fill in the rest 
 
+    for melon in melons:
+        str = "Harvested by {} from Field #{}".format(melon.harvested_by, melon.from_field)
+        if melon.is_sellable():
+            str += " CAN BE SOLD"
+        else:
+            str += " NOT SELLABLE"
+        print str
 
+def melons_from_file(filename):
+
+    melons = []
+    with open(filename) as lines:
+        for line in lines:
+            words = line.split(' ')
+            shape_rating = int(words[1])
+            color_rating = int(words[3])
+            melon_code = words[5]
+            harvested_by = words[8]
+            from_field = words[11]
+
+            melon = Melon(melon_code, shape_rating, color_rating, from_field, harvested_by)
+            melons.append(melon)
+    return melons
+
+
+FILENAME = 'harvest_log.txt'
+print melons_from_file(FILENAME)
+
+# individual_melons = make_melons(make_melon_types())
+# get_sellability_report(individual_melons)
